@@ -128,10 +128,21 @@ def valley_high_low(peaks_indices, valley_point):
 
 
 def calculate_means(segmented_image, original_image):
-    object_pixels = original_image[segmented_image == 1]
-    background_pixels = original_image[segmented_image == 0]
+    object_sum = 0
+    object_count = 0
+    background_sum = 0
+    background_count = 0
 
-    object_mean = object_pixels.mean() if object_pixels.size > 0 else 0
-    background_mean = background_pixels.mean() if background_pixels.size > 0 else 0
+    for i in range(segmented_image.shape[0]):
+        for j in range(segmented_image.shape[1]):
+            if segmented_image[i, j] == 255:  # Object pixel
+                object_sum += original_image[i, j]
+                object_count += 1
+            else:  # Background pixel
+                background_sum += original_image[i, j]
+                background_count += 1
+
+    object_mean = object_sum / object_count if object_count > 0 else 0
+    background_mean = background_sum / background_count if background_count > 0 else 0
 
     return background_mean, object_mean
